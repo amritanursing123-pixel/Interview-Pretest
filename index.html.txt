@@ -2,46 +2,66 @@
 <html>
 <head>
   <title>Interview Pre-Test</title>
-  <style>
-    body { font-family: Arial; max-width: 800px; margin: auto; }
-    .hidden { display: none; }
-  </style>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<h2>Candidate Pre-Test</h2>
+<h2>Interview Pre-Test</h2>
 
+<!-- FORM SECTION -->
 <div id="formSection">
-  <input placeholder="Name" id="name"><br><br>
-  <input placeholder="Email" id="email"><br><br>
-  <input placeholder="Mobile" id="mobile"><br><br>
-  <input placeholder="Domicile" id="domicile"><br><br>
-  <input placeholder="Total Experience" id="experience"><br><br>
-  <input placeholder="Previous Working Area" id="area"><br><br>
-  <input placeholder="College Studied" id="college"><br><br>
-  <input placeholder="Previous Hospital" id="hospital"><br><br>
+  <h3>Candidate Details</h3>
 
-  <select id="exam">
-    <option value="">Select Exam</option>
+  <label>Name</label>
+  <input type="text" id="name" required>
+
+  <label>Email</label>
+  <input type="email" id="email" required>
+
+  <label>Mobile Number</label>
+  <input type="tel" id="mobile" required>
+
+  <label>Domicile</label>
+  <input type="text" id="domicile">
+
+  <label>Total Experience</label>
+  <input type="text" id="experience">
+
+  <label>Previous Working Area</label>
+  <input type="text" id="area">
+
+  <label>College Studied</label>
+  <input type="text" id="college">
+
+  <label>Previous Hospital</label>
+  <input type="text" id="hospital">
+
+  <label>Select Exam</label>
+  <select id="exam" required>
+    <option value="">-- Select --</option>
     <option value="ANM">ANM</option>
     <option value="GNM">GNM</option>
     <option value="OT">OT</option>
-  </select><br><br>
+  </select>
 
+  <br><br>
   <button onclick="startExam()">Start Exam</button>
 </div>
 
-<div id="examSection" class="hidden"></div>
-<div id="resultSection" class="hidden"></div>
+<!-- EXAM SECTION -->
+<div id="examSection" style="display:none;"></div>
+
+<!-- RESULT SECTION -->
+<div id="resultSection" style="display:none;"></div>
 
 <script>
-/* ✅ YOUR APPS SCRIPT WEB APP URL */
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxwzKBTeXFSNJIcNdq8Q4AWXtV21YwYLRSf6ASK1aIn46iNlC11YUxzovSBuqHDCKkyyA/exec";
 
 const questions = {
   ANM: [
     {q:"ANM Question 1", o:["A","B","C","D"], a:0}
-    // add total 21 questions
   ],
   GNM: [
     {q:"GNM Question 1", o:["A","B","C","D"], a:1}
@@ -55,23 +75,23 @@ let selectedQuestions = [];
 
 function startExam() {
   const exam = document.getElementById("exam").value;
-  if (!exam) return alert("Select exam");
+  if (!exam) return alert("Please select exam");
 
   selectedQuestions = questions[exam];
-  let html = "<h3>Exam: " + exam + "</h3>";
+  let html = "<h3>"+exam+" Exam</h3>";
 
   selectedQuestions.forEach((q, i) => {
     html += `<p>${i+1}. ${q.q}</p>`;
     q.o.forEach((opt, j) => {
-      html += `<input type="radio" name="q${i}" value="${j}"> ${opt}<br>`;
+      html += `<label><input type="radio" name="q${i}" value="${j}"> ${opt}</label><br>`;
     });
   });
 
   html += `<br><button onclick="submitExam()">Submit</button>`;
 
-  document.getElementById("formSection").classList.add("hidden");
+  document.getElementById("formSection").style.display = "none";
   document.getElementById("examSection").innerHTML = html;
-  document.getElementById("examSection").classList.remove("hidden");
+  document.getElementById("examSection").style.display = "block";
 }
 
 function submitExam() {
@@ -100,16 +120,11 @@ function submitExam() {
     body: JSON.stringify(payload)
   })
   .then(res => res.json())
-  .then(data => {
-    if (data.status === "duplicate") {
-      alert("You already gave the exam. Please contact administrator.");
-      location.reload();
-    } else {
-      document.getElementById("examSection").classList.add("hidden");
-      document.getElementById("resultSection").innerHTML =
-        `<h3>Your Score: ${score} / 21</h3><p>Thank you.</p>`;
-      document.getElementById("resultSection").classList.remove("hidden");
-    }
+  .then(() => {
+    document.getElementById("examSection").style.display = "none";
+    document.getElementById("resultSection").innerHTML =
+      `<h3>Your Score: ${score} / 21</h3>`;
+    document.getElementById("resultSection").style.display = "block";
   });
 }
 </script>
