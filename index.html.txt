@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Interview Pre-Test</title>
+  <style>
+    body { font-family: Arial; max-width: 800px; margin: auto; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+<h2>Candidate Pre-Test</h2>
+
+<div id="formSection">
+  <input placeholder="Name" id="name"><br><br>
+  <input placeholder="Email" id="email"><br><br>
+  <input placeholder="Mobile" id="mobile"><br><br>
+  <input placeholder="Domicile" id="domicile"><br><br>
+  <input placeholder="Total Experience" id="experience"><br><br>
+  <input placeholder="Previous Working Area" id="area"><br><br>
+  <input placeholder="College Studied" id="college"><br><br>
+  <input placeholder="Previous Hospital" id="hospital"><br><br>
+
+  <select id="exam">
+    <option value="">Select Exam</option>
+    <option value="ANM">ANM</option>
+    <option value="GNM">GNM</option>
+    <option value="OT">OT</option>
+  </select><br><br>
+
+  <button onclick="startExam()">Start Exam</button>
+</div>
+
+<div id="examSection" class="hidden"></div>
+<div id="resultSection" class="hidden"></div>
+
+<script>
+/* ✅ YOUR APPS SCRIPT WEB APP URL */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxwzKBTeXFSNJIcNdq8Q4AWXtV21YwYLRSf6ASK1aIn46iNlC11YUxzovSBuqHDCKkyyA/exec";
+
+const questions = {
+  ANM: [
+    {q:"ANM Question 1", o:["A","B","C","D"], a:0}
+    // add total 21 questions
+  ],
+  GNM: [
+    {q:"GNM Question 1", o:["A","B","C","D"], a:1}
+  ],
+  OT: [
+    {q:"OT Question 1", o:["A","B","C","D"], a:2}
+  ]
+};
+
+let selectedQuestions = [];
+
+function startExam() {
+  const exam = document.getElementById("exam").value;
+  if (!exam) return alert("Select exam");
+
+  selectedQuestions = questions[exam];
+  let html = "<h3>Exam: " + exam + "</h3>";
+
+  selectedQuestions.forEach((q, i) => {
+    html += `<p>${i+1}. ${q.q}</p>`;
+    q.o.forEach((opt, j) => {
+      html += `<input type="radio" name="q${i}" value="${j}"> ${opt}<br>`;
+    });
+  });
+
+  html += `<br><button onclick="submitExam()">Submit</button>`;
+
+  document.getElementById("formSection").classList.add("hidden");
+  document.getElementById("examSection").innerHTML = html;
+  document.getElementById("examSection").classList.remove("hidden");
+}
+
+function submitExam() {
+  let score = 0;
+  selectedQuestions.forEach((q, i) => {
+    const ans = document.querySelector(`input[name=q${i}]:checked`);
+    if (ans && parseInt(ans.value) === q.a) score++;
+  });
+
+  const payload = {
+    name: name.value,
+    email: email.value,
+    mobile: mobile.value,
+    domicile: domicile.value,
+    experience: experience.value,
+    area: area.value,
+    college: college.value,
+    hospital: hospital.value,
+    exam: exam.value,
+    score: score,
+    total: 21
+  };
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify(payload)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === "duplicate") {
+      alert("You already gave the exam. Please contact administrator.");
+      location.reload();
+    } else {
+      document.getElementById("examSection").classList.add("hidden");
+      document.getElementById("resultSection").innerHTML =
+        `<h3>Your Score: ${score} / 21</h3><p>Thank you.</p>`;
+      document.getElementById("resultSection").classList.remove("hidden");
+    }
+  });
+}
+</script>
+
+</body>
+</html>
