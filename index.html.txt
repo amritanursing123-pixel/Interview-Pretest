@@ -1,133 +1,30 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Interview Pre-Test</title>
+  <title>Test Form</title>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<h2>Interview Pre-Test</h2>
+<h1>Candidate Details</h1>
 
-<!-- FORM SECTION -->
-<div id="formSection">
-  <h3>Candidate Details</h3>
+<label>Name</label><br>
+<input type="text"><br><br>
 
-  <label>Name</label>
-  <input type="text" id="name" required>
+<label>Email</label><br>
+<input type="email"><br><br>
 
-  <label>Email</label>
-  <input type="email" id="email" required>
+<label>Mobile</label><br>
+<input type="tel"><br><br>
 
-  <label>Mobile Number</label>
-  <input type="tel" id="mobile" required>
+<label>Exam</label><br>
+<select>
+  <option>ANM</option>
+  <option>GNM</option>
+  <option>OT</option>
+</select><br><br>
 
-  <label>Domicile</label>
-  <input type="text" id="domicile">
-
-  <label>Total Experience</label>
-  <input type="text" id="experience">
-
-  <label>Previous Working Area</label>
-  <input type="text" id="area">
-
-  <label>College Studied</label>
-  <input type="text" id="college">
-
-  <label>Previous Hospital</label>
-  <input type="text" id="hospital">
-
-  <label>Select Exam</label>
-  <select id="exam" required>
-    <option value="">-- Select --</option>
-    <option value="ANM">ANM</option>
-    <option value="GNM">GNM</option>
-    <option value="OT">OT</option>
-  </select>
-
-  <br><br>
-  <button onclick="startExam()">Start Exam</button>
-</div>
-
-<!-- EXAM SECTION -->
-<div id="examSection" style="display:none;"></div>
-
-<!-- RESULT SECTION -->
-<div id="resultSection" style="display:none;"></div>
-
-<script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxwzKBTeXFSNJIcNdq8Q4AWXtV21YwYLRSf6ASK1aIn46iNlC11YUxzovSBuqHDCKkyyA/exec";
-
-const questions = {
-  ANM: [
-    {q:"ANM Question 1", o:["A","B","C","D"], a:0}
-  ],
-  GNM: [
-    {q:"GNM Question 1", o:["A","B","C","D"], a:1}
-  ],
-  OT: [
-    {q:"OT Question 1", o:["A","B","C","D"], a:2}
-  ]
-};
-
-let selectedQuestions = [];
-
-function startExam() {
-  const exam = document.getElementById("exam").value;
-  if (!exam) return alert("Please select exam");
-
-  selectedQuestions = questions[exam];
-  let html = "<h3>"+exam+" Exam</h3>";
-
-  selectedQuestions.forEach((q, i) => {
-    html += `<p>${i+1}. ${q.q}</p>`;
-    q.o.forEach((opt, j) => {
-      html += `<label><input type="radio" name="q${i}" value="${j}"> ${opt}</label><br>`;
-    });
-  });
-
-  html += `<br><button onclick="submitExam()">Submit</button>`;
-
-  document.getElementById("formSection").style.display = "none";
-  document.getElementById("examSection").innerHTML = html;
-  document.getElementById("examSection").style.display = "block";
-}
-
-function submitExam() {
-  let score = 0;
-  selectedQuestions.forEach((q, i) => {
-    const ans = document.querySelector(`input[name=q${i}]:checked`);
-    if (ans && parseInt(ans.value) === q.a) score++;
-  });
-
-  const payload = {
-    name: name.value,
-    email: email.value,
-    mobile: mobile.value,
-    domicile: domicile.value,
-    experience: experience.value,
-    area: area.value,
-    college: college.value,
-    hospital: hospital.value,
-    exam: exam.value,
-    score: score,
-    total: 21
-  };
-
-  fetch(SCRIPT_URL, {
-    method: "POST",
-    body: JSON.stringify(payload)
-  })
-  .then(res => res.json())
-  .then(() => {
-    document.getElementById("examSection").style.display = "none";
-    document.getElementById("resultSection").innerHTML =
-      `<h3>Your Score: ${score} / 21</h3>`;
-    document.getElementById("resultSection").style.display = "block";
-  });
-}
-</script>
+<button>Start Exam</button>
 
 </body>
 </html>
